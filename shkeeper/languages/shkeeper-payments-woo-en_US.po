@@ -1,0 +1,244 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Shkeeper  WooCommerce Payment Gateway\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2022-05-03 09:48+0000\n"
+"PO-Revision-Date: 2022-05-03 12:11+0000\n"
+"Last-Translator: \n"
+"Language-Team: English (United States)\n"
+"Language: en_US\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.6.1; wp-5.9.3\n"
+"X-Domain: shkeeper-payments-woo"
+
+#. %1$s zone name, %2$s shipping method instance name.
+#: includes/class-wc-payment-gateway-shkeeper.php:256
+#, php-format
+msgid "%1$s &ndash; %2$s"
+msgstr "%1$s &ndash; %2$s"
+
+#. %1$s shipping method title, %2$s shipping method id.
+#: includes/class-wc-payment-gateway-shkeeper.php:253
+#, php-format
+msgid "%1$s (#%2$s)"
+msgstr "%1$s (#%2$s)"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:115
+msgid "Accept for virtual orders"
+msgstr "Accept for virtual orders"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:116
+msgid "Accept Shkeeper if the order is virtual"
+msgstr "Accept Shkeeper if the order is virtual"
+
+#. %1$s shipping method name.
+#: includes/class-wc-payment-gateway-shkeeper.php:238
+#, php-format
+msgid "Any &quot;%1$s&quot; method"
+msgstr "Any &quot;%1$s&quot; method"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:69
+msgid "Api key"
+msgstr "Api key"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:71
+msgid "Api key for shkeeper gateway"
+msgstr "Api key for shkeeper gateway"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:75
+msgid "Api url"
+msgstr "Api url"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:77
+msgid "Api url for shkeeper gateway"
+msgstr "Api url for shkeeper gateway"
+
+#: includes/shkeeper-checkout-description.php:18
+msgid "Can not get cryptocurrency list. Please, choose another payment method."
+msgstr ""
+"Can not get cryptocurrency list. Please, choose another payment method."
+
+#: includes/shkeeper-order-statuses.php:41
+#: includes/shkeeper-order-statuses.php:42
+msgid "Change status to invoiced"
+msgstr "Change status to invoiced"
+
+#: includes/shkeeper-checkout-description.php:75
+#, fuzzy
+#| msgid "Crypto address: "
+msgid "Crypto address:"
+msgstr "Crypto address: "
+
+#: includes/shkeeper-checkout-description.php:76
+#, fuzzy
+#| msgid "Crypto amount: "
+msgid "Crypto amount:"
+msgstr "Crypto amount: "
+
+#: includes/class-wc-payment-gateway-shkeeper.php:399
+msgid "Crypto payment details"
+msgstr "Crypto payment details"
+
+#. Description of the plugin
+msgid ""
+"Crypto payments gateway to accept the payment on your woocommerce store."
+msgstr ""
+"Crypto payments gateway to accept the payment on your woocommerce store."
+
+#: includes/class-wc-payment-gateway-shkeeper.php:88
+msgid "Description"
+msgstr "Description"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:102
+msgid "Enable for shipping methods"
+msgstr "Enable for shipping methods"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:122
+msgid "Enable logging"
+msgstr "Enable logging"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:63
+msgid "Enable shkeeper"
+msgstr "Enable shkeeper"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:62
+msgid "Enable/Disable"
+msgstr "Enable/Disable"
+
+#: includes/shkeeper-checkout-description.php:49
+#, fuzzy
+#| msgid "Find crypto payment details bellow. "
+msgid "Find crypto payment details bellow."
+msgstr "Find crypto payment details bellow. "
+
+#: includes/class-wc-payment-gateway-shkeeper.php:51
+msgid "Have your customers pay with crypto coins."
+msgstr "Have your customers pay with crypto coins."
+
+#. Author URI of the plugin
+msgid "https://vsys.host/"
+msgstr ""
+
+#: includes/class-wc-payment-gateway-shkeeper.php:107
+msgid ""
+"If Shkeeper is only available for certain methods, set it up here. Leave "
+"blank to enable for all methods."
+msgstr ""
+"If Shkeeper is only available for certain methods, set it up here. Leave "
+"blank to enable for all methods."
+
+#: includes/class-wc-payment-gateway-shkeeper.php:95
+msgid "Instructions"
+msgstr "Instructions"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:97
+msgid "Instructions that will be added to the thank you page."
+msgstr "Instructions that will be added to the thank you page."
+
+#: includes/shkeeper-order-statuses.php:15
+#, php-format
+msgid "Invoiced <span class=\"count\">(%s)</span>"
+msgid_plural "Invoiced<span class=\"count\">(%s)</span>"
+msgstr[0] "Invoiced <span class=\"count\">(%s)</span>"
+msgstr[1] "Invoiced<span class=\"count\">(%s)</span>"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:121
+msgid "Logging"
+msgstr "Logging"
+
+#: includes/shkeeper-order-statuses.php:10
+#: includes/shkeeper-order-statuses.php:30
+msgctxt "Order status"
+msgid "Invoiced"
+msgstr "Invoiced"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:256
+msgid "Other locations"
+msgstr "Other locations"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:91
+#: includes/class-wc-payment-gateway-shkeeper.php:98
+msgid "Pay with crypto."
+msgstr "Pay with crypto."
+
+#: includes/shkeeper-checkout-description.php:34
+msgid "Payment cryptocurrency"
+msgstr "Payment cryptocurrency"
+
+#: includes/shkeeper-checkout-description.php:74
+#: includes/shkeeper-checkout-description.php:82
+#, fuzzy
+#| msgid "Payment cryptocurrency: "
+msgid "Payment cryptocurrency:"
+msgstr "Payment cryptocurrency: "
+
+#: includes/class-wc-payment-gateway-shkeeper.php:83
+msgid "Payment method description that the customer will see on your checkout."
+msgstr ""
+"Payment method description that the customer will see on your checkout."
+
+#: includes/class-wc-payment-gateway-shkeeper.php:90
+msgid "Payment method description that the customer will see on your website."
+msgstr "Payment method description that the customer will see on your website."
+
+#: includes/shkeeper-checkout-description.php:58
+msgid "Please choose cryptocurrency that you would pay"
+msgstr "Please choose cryptocurrency that you would pay"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:409
+msgid "Please, pay"
+msgstr "Please, pay"
+
+#: includes/shkeeper-checkout-description.php:22
+msgid "Select Cryptocurrency"
+msgstr "Select Cryptocurrency"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:111
+msgid "Select shipping methods"
+msgstr "Select shipping methods"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:50
+#: includes/class-wc-payment-gateway-shkeeper.php:84
+msgid "Shkeeper"
+msgstr "Shkeeper"
+
+#. Name of the plugin
+msgid "Shkeeper  WooCommerce Payment Gateway"
+msgstr "Shkeeper  WooCommerce Payment Gateway"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:367
+#: includes/class-wc-payment-gateway-shkeeper.php:371
+msgid "Shkeeper error: "
+msgstr "Shkeeper error: "
+
+#: includes/class-wc-shkeeper-api.php:97
+msgid "There was a problem connecting to the Shkeeper API endpoint."
+msgstr "There was a problem connecting to the Shkeeper API endpoint."
+
+#: includes/class-wc-shkeeper-api.php:24
+msgid "There was a problem getting crypto currencies from Shkeeper API."
+msgstr "There was a problem getting crypto currencies from Shkeeper API."
+
+#: includes/class-wc-shkeeper-api.php:112
+msgid "There was a problem getting response from Shkeeper API."
+msgstr "There was a problem getting response from Shkeeper API."
+
+#: includes/class-wc-shkeeper-api.php:52
+msgid "There was a problem with creating payment request in Shkeeper API."
+msgstr "There was a problem with creating payment request in Shkeeper API."
+
+#: includes/class-wc-payment-gateway-shkeeper.php:81
+msgid "Title"
+msgstr "Title"
+
+#: includes/class-wc-payment-gateway-shkeeper.php:412
+msgid "To:"
+msgstr "To:"
+
+#. Author of the plugin
+msgid "Virtual Systems"
+msgstr "Virtual Systems"
