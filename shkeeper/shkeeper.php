@@ -1,9 +1,12 @@
 <?php
 /*
- * Plugin Name: Shkeeper  WooCommerce Payment Gateway
+ * Plugin Name: Shkeeper Payment Gateway
+ * Plugin URI: https://github.com/vsys-host/wp-shkeeper-plugin
  * Description: Crypto payments gateway to accept the payment on your woocommerce store.
  * Author: Virtual Systems
  * Author URI: https://vsys.host/
+ * License GPL v3
+ * License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
  * Version: 1.0.0
  * WC requires at least: 5.7
  * WC tested up to: 6.4
