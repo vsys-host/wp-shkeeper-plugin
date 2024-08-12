@@ -6,7 +6,7 @@ Shkeeper payment gateway plugin for CMS WordPress + WooCommerce
 ## Installation
 ### Upload via WordPress Admin
 
-Download Shkeeper plugin as a zip file to your PC.
+Download from [Github releases page](https://github.com/vsys-host/wp-shkeeper-plugin/releases) the latest module archive `shkeeper.zip` to your PC.
 To upload Shkeeper plugin, log in to your WordPress dashboard.
 1. Navigate to Plugins > Add New.
 2. Click the Upload Plugin button at the top of the screen.
