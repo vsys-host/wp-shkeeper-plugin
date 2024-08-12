@@ -39,3 +39,21 @@ After successful installation you should configure plugin.
     * Accept for virtual orders - Disable or enable Skeeper for WooCommerce virtual orders.
     * Logging - Disable or enable Shkeeper plugin logging of communication with Shkeeper Api server.
 4. Once done save the changes.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/33e77242-d823-40bf-9305-19ee1cd8ad1e" alt="photo_2024-08-12_10-25-03">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1ca843ad-c015-4234-a511-8ff3eadedf43" alt="photo_2024-08-12_10-25-12">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1887179e-31f8-4199-ad95-c4cb8addaefe" alt="photo_2024-08-12_10-25-17">
+</p>
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/1a174ceb-39b4-4e1b-9b45-9730d74634c3" alt="photo_2024-08-12_10-25-22">
+</p>
+
+
