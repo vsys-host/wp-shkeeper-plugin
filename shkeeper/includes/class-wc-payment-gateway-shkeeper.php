@@ -4,11 +4,11 @@
  *
  * Provides a Shkeeper Payment Gateway.
  *
- * @class       WC_Gateway_Shkeeper
+ * @class       Shkeeper_WC_Gateway
  * @extends     WC_Payment_Gateway
- * @version     1.0.0
+ * @version     1.1.0
  */
-class WC_Gateway_Shkeeper extends WC_Payment_Gateway
+class Shkeeper_WC_Gateway extends WC_Payment_Gateway
 {
 
     /**
@@ -36,8 +36,8 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
         add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 3);
 
         //Plugin Css
-        wp_register_style( 'shkeeper_styles', plugins_url( 'assets/css/shkeeper-styles.css', WC_SHKEEPER_MAIN_FILE ), [], WC_SHKEEPER_VERSION );
-        wp_enqueue_style( 'shkeeper_styles' );
+        wp_register_style( 'shkeeper_styles', plugins_url( 'assets/css/shkeeper-styles.css', SHKEEPER_WC_MAIN_FILE ), [], SHKEEPER_WC_VERSION );
+	wp_enqueue_style( 'shkeeper_styles' );
     }
 
     /**
@@ -46,9 +46,9 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
     protected function setup_properties()
     {
         $this->id = 'shkeeper';
-        $this->icon = apply_filters('woocommerce_shkeeper_icon', plugins_url( 'assets/img/shkeeper-logo.svg', WC_SHKEEPER_MAIN_FILE ));
-        $this->method_title = __('Shkeeper', 'shkeeper-payments-woo');
-        $this->method_description = __('Have your customers pay with crypto coins.', 'shkeeper-payments-woo');
+        $this->icon = apply_filters('woocommerce_shkeeper_icon', plugins_url( 'assets/img/shkeeper-logo.svg', SHKEEPER_WC_MAIN_FILE ));
+        $this->method_title = __('Shkeeper', 'shkeeper-payment-gateway');
+        $this->method_description = __('Have your customers pay with crypto coins.', 'shkeeper-payment-gateway');
         $this->has_fields = false;
     }
 
@@ -59,67 +59,67 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
     {
         $this->form_fields = array(
             'enabled' => array(
-                'title' => __('Enable/Disable', 'shkeeper-payments-woo'),
-                'label' => __('Enable shkeeper', 'shkeeper-payments-woo'),
+                'title' => __('Enable/Disable', 'shkeeper-payment-gateway'),
+                'label' => __('Enable shkeeper', 'shkeeper-payment-gateway'),
                 'type' => 'checkbox',
                 'description' => '',
                 'default' => 'no',
             ),
             'api_key' => array(
-                'title' => __('Api key', 'shkeeper-payments-woo'),
+                'title' => __('Api key', 'shkeeper-payment-gateway'),
                 'type' => 'password',
-                'description' => __('Api key for shkeeper gateway', 'shkeeper-payments-woo'),
+                'description' => __('Api key for shkeeper gateway', 'shkeeper-payment-gateway'),
                 'desc_tip' => true,
             ),
             'api_url' => array(
-                'title' => __('Api url', 'shkeeper-payments-woo'),
+                'title' => __('Api url', 'shkeeper-payment-gateway'),
                 'type' => 'text',
-                'description' => __('Api url for shkeeper gateway', 'shkeeper-payments-woo'),
+                'description' => __('Api url for shkeeper gateway', 'shkeeper-payment-gateway'),
                 'desc_tip' => true,
             ),
             'title' => array(
-                'title' => __('Title', 'shkeeper-payments-woo'),
+                'title' => __('Title', 'shkeeper-payment-gateway'),
                 'type' => 'text',
-                'description' => __('Payment method description that the customer will see on your checkout.', 'shkeeper-payments-woo'),
-                'default' => __('Shkeeper', 'shkeeper-payments-woo'),
+                'description' => __('Payment method description that the customer will see on your checkout.', 'shkeeper-payment-gateway'),
+                'default' => __('Shkeeper', 'shkeeper-payment-gateway'),
                 'desc_tip' => true,
             ),
             'description' => array(
-                'title' => __('Description', 'shkeeper-payments-woo'),
+                'title' => __('Description', 'shkeeper-payment-gateway'),
                 'type' => 'textarea',
-                'description' => __('Payment method description that the customer will see on your website.', 'shkeeper-payments-woo'),
-                'default' => __('Pay with crypto.', 'shkeeper-payments-woo'),
+                'description' => __('Payment method description that the customer will see on your website.', 'shkeeper-payment-gateway'),
+                'default' => __('Pay with crypto.', 'shkeeper-payment-gateway'),
                 'desc_tip' => true,
             ),
             'instructions' => array(
-                'title' => __('Instructions', 'shkeeper-payments-woo'),
+                'title' => __('Instructions', 'shkeeper-payment-gateway'),
                 'type' => 'textarea',
-                'description' => __('Instructions that will be added to the thank you page.', 'shkeeper-payments-woo'),
-                'default' => __('Pay with crypto.', 'shkeeper-payments-woo'),
+                'description' => __('Instructions that will be added to the thank you page.', 'shkeeper-payment-gateway'),
+                'default' => __('Pay with crypto.', 'shkeeper-payment-gateway'),
                 'desc_tip' => true,
             ),
             'enable_for_methods' => array(
-                'title' => __('Enable for shipping methods', 'shkeeper-payments-woo'),
+                'title' => __('Enable for shipping methods', 'shkeeper-payment-gateway'),
                 'type' => 'multiselect',
                 'class' => 'wc-enhanced-select',
                 'css' => 'width: 400px;',
                 'default' => '',
-                'description' => __('If Shkeeper is only available for certain methods, set it up here. Leave blank to enable for all methods.', 'shkeeper-payments-woo'),
+                'description' => __('If Shkeeper is only available for certain methods, set it up here. Leave blank to enable for all methods.', 'shkeeper-payment-gateway'),
                 'options' => $this->load_shipping_method_options(),
                 'desc_tip' => true,
                 'custom_attributes' => array(
-                    'data-placeholder' => __('Select shipping methods', 'shkeeper-payments-woo'),
+                    'data-placeholder' => __('Select shipping methods', 'shkeeper-payment-gateway'),
                 ),
             ),
             'enable_for_virtual' => array(
-                'title' => __('Accept for virtual orders', 'shkeeper-payments-woo'),
-                'label' => __('Accept Shkeeper if the order is virtual', 'shkeeper-payments-woo'),
+                'title' => __('Accept for virtual orders', 'shkeeper-payment-gateway'),
+                'label' => __('Accept Shkeeper if the order is virtual', 'shkeeper-payment-gateway'),
                 'type' => 'checkbox',
                 'default' => 'yes',
             ),
             'logging' => array(
-                'title' => __('Logging', 'shkeeper-payments-woo'),
-                'label' => __('Enable logging', 'shkeeper-payments-woo'),
+                'title' => __('Logging', 'shkeeper-payment-gateway'),
+                'label' => __('Enable logging', 'shkeeper-payment-gateway'),
                 'type' => 'checkbox',
                 'description' => '',
                 'default' => 'no',
@@ -134,6 +134,7 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
      */
     public function is_available()
     {
+	return true;
         $order = null;
         $needs_shipping = false;
 
@@ -159,7 +160,7 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
         $needs_shipping = apply_filters('woocommerce_cart_needs_shipping', $needs_shipping);
 
         // Virtual order, with virtual disabled.
-        if (!$this->enable_for_virtual && !$needs_shipping) {
+	if (!$this->enable_for_virtual && !$needs_shipping) {		
             return false;
         }
 
@@ -235,7 +236,7 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
             $options[$method->get_method_title()] = array();
 
             // Translators: %1$s shipping method name.
-            $options[$method->get_method_title()][$method->id] = sprintf(__('Any &quot;%1$s&quot; method', 'shkeeper-payments-woo'), $method->get_method_title());
+            $options[$method->get_method_title()][$method->id] = sprintf(__('Any &quot;%1$s&quot; method', 'shkeeper-payment-gateway'), $method->get_method_title());
 
             foreach ($zones as $zone) {
 
@@ -250,10 +251,10 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
                     $option_id = $shipping_method_instance->get_rate_id();
 
                     // Translators: %1$s shipping method title, %2$s shipping method id.
-                    $option_instance_title = sprintf(__('%1$s (#%2$s)', 'shkeeper-payments-woo'), $shipping_method_instance->get_title(), $shipping_method_instance_id);
+                    $option_instance_title = sprintf(__('%1$s (#%2$s)', 'shkeeper-payment-gateway'), $shipping_method_instance->get_title(), $shipping_method_instance_id);
 
                     // Translators: %1$s zone name, %2$s shipping method instance name.
-                    $option_title = sprintf(__('%1$s &ndash; %2$s', 'shkeeper-payments-woo'), $zone->get_id() ? $zone->get_zone_name() : __('Other locations', 'shkeeper-payments-woo'), $option_instance_title);
+                    $option_title = sprintf(__('%1$s &ndash; %2$s', 'shkeeper-payment-gateway'), $zone->get_id() ? $zone->get_zone_name() : __('Other locations', 'shkeeper-payment-gateway'), $option_instance_title);
 
                     $options[$method->get_method_title()][$option_id] = $option_title;
                 }
@@ -360,15 +361,15 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
 
     private function shkeeper_payment_processing($order)
     {
-        $payment_request = WC_Shkeeper_API::sendPaymentRequest($order);
-        WC_Shkeeper_Logger::log( 'Processing response: ' . print_r( $payment_request, true ) );
+        $payment_request = Shkeeper_API::sendPaymentRequest($order);
+        Shkeeper_Logger::log( 'Processing response: ' . print_r( $payment_request, true ) );
 
         if (is_wp_error($payment_request)) {
-            wc_add_notice( __('Shkeeper error: ', 'shkeeper-payments-woo') . $payment_request->get_error_message(), 'error' );
+            wc_add_notice( __('Shkeeper error: ', 'shkeeper-payment-gateway') . $payment_request->get_error_message(), 'error' );
             return;
         }
         if($payment_request->status != 'success') {
-            wc_add_notice( __('Shkeeper error: ', 'shkeeper-payments-woo') . $payment_request->message, 'error' );
+            wc_add_notice( __('Shkeeper error: ', 'shkeeper-payment-gateway') . $payment_request->message, 'error' );
             return;
         }
 
@@ -379,7 +380,7 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
 
         wc_reduce_stock_levels( $order_id );
 
-        $order->update_status( 'wc-invoiced', sprintf( __( 'Shkeeper charge awaiting payment to address %s.', 'woocommerce-gateway-stripe' ), $payment_request->address ) );
+        $order->update_status( 'wc-invoiced', sprintf( __( 'Shkeeper charge awaiting payment to address %s.', 'shkeeper-payment-gateway' ), $payment_request->address ) );
 
     }
 
@@ -393,32 +394,40 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
         $cryptoAddr = $order->get_meta('shkeeper_crypto_address');
         $cryptoAmount = $order->get_meta('shkeeper_crypto_amount');
         $cryptoCurr = $order->get_meta('shkeeper_crypto_curr');
+        wp_enqueue_script( 'qrcodejs', plugins_url( 'assets/js/qrcode.min.js', SHKEEPER_WC_MAIN_FILE ), [], '1.0.0', true);
+        $qrCodeJs = "new QRCode(document.getElementById('shkeeper-payment-qr'), {
+                text: '$cryptoAddr?amount=$cryptoAmount',
+                width: 128,
+                height: 128,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.H
+         });";
 
-        ob_start();
+        wp_add_inline_script('qrcodejs', $qrCodeJs);
+
+	ob_start();
         echo '<section class="shkeeper-payment-details">';
-        echo '<h2 class="shkeeper-payment-details__title">'. __('Crypto payment details', 'shkeeper-payments-woo') .'</h2>';
-        echo '<section class="woocommerce-columns woocommerce-columns--2 col2-set shkeeper-crypto">';
+        echo '<h2 class="shkeeper-payment-details__title">'. esc_html__('Crypto payment details', 'shkeeper-payment-gateway') .'</h2>';
 
-		echo '<div class="woocommerce-column woocommerce-column--1 col-1 shkeeper-crypto-qr" >';
-        if($cryptoQr = $this->get_qr_code_base64($this->build_str_for_qr($cryptoAddr, $cryptoAmount, $cryptoCurr))) {
-            echo '<p><img src="data:image/png;base64,'.$cryptoQr.'"/></p>';
-        }
-        echo '</div>';
-
-        echo '<div class="woocommerce-column woocommerce-column--2 col-2 shkeeper-crypto-payment" >';
-        echo '<p> ' . __('Please, pay', 'shkeeper-payments-woo') . ' ';
-        echo '<b>' . rtrim(rtrim(sprintf('%.8F', $cryptoAmount), '0'), ".") . '</b>';
-        echo ' ' . wc_strtoupper($cryptoCurr) . '</p>';
-        echo '<p>' . __('To:', 'shkeeper-payments-woo') . ' ' . $cryptoAddr . '</p>';
-        echo '</div>';
-        echo '</section>';
-        echo '</section>';
-        $paymentSection = ob_get_clean();
-        echo $paymentSection;
-
-        if ($this->instructions) {
+	if ($this->instructions) {
             echo wp_kses_post(wpautop(wptexturize($this->instructions)));
         }
+        echo '<section class="wp-block-columns alignwide woocommerce-order-confirmation-address-wrapper is-layout-flex wp-container-core-columns-is-layout-1 wp-block-columns-is-layout-flex shkeeper-crypto">';
+
+        echo '<div class="is-layout-flow wp-block-column-is-layout-flow shkeeper-crypto-payment">';
+        echo '<p> ' . esc_html__('Please, pay', 'shkeeper-payment-gateway') . ' ';
+        echo '<b>' . esc_html(rtrim(rtrim(sprintf('%.8F', $cryptoAmount), '0'), ".")) . '</b>';
+        echo ' ' . wc_strtoupper(esc_html($cryptoCurr)) . '</p>';
+        echo '<p>' . esc_html__('To:', 'shkeeper-payment-gateway') . ' <span class="shkeeper-payment-address">' . esc_html($cryptoAddr) . '</span></p>';
+        echo '</div>';
+	echo '<div id="shkeeper-payment-qr" class="wp-block-column-is-layout-flow shkeeper-crypto-qr"> </div>';
+        echo '</section>';
+
+	echo '</section>';
+
+        $paymentSection = ob_get_clean();
+	echo $paymentSection;
     }
 
     /**
@@ -437,38 +446,6 @@ class WC_Gateway_Shkeeper extends WC_Payment_Gateway
 
     public static function is_me($gateway_id) {
         return $gateway_id === 'shkeeper';
-    }
-
-    private function get_qr_code_base64($str) {
-        if(!extension_loaded('gd')) {
-            return false;
-        }
-        require_once plugin_dir_path(WC_SHKEEPER_MAIN_FILE) . 'vendor/phpqrcode/qrlib.php';
-        return QRcode::png($str,'*', QR_ECLEVEL_H, 5);
-
-    }
-
-    private function build_str_for_qr($addr, $amount, $curr) {
-        $str = '';
-
-        switch (wc_strtolower($curr)) {
-            case 'btc':
-                $str .= 'bitcoin:';
-                break;
-            case 'ltc':
-                $str .= 'litecoin:';
-                break;
-            case 'doge':
-                $str .= 'dogecoin:';
-                break;
-            default:
-                $str .= '';
-                break;
-        }
-
-        $str .= $addr . '?amount=' . $amount;
-
-        return $str;
     }
 
     private function delete_shkeeper_custom_meta($order) {
