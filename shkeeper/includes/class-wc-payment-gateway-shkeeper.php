@@ -375,9 +375,11 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
 
         $order_id = $order->get_id();
 
-        update_post_meta($order_id, 'shkeeper_crypto_address', $payment_request->wallet);
-        update_post_meta($order_id, 'shkeeper_crypto_amount', $payment_request->amount);
+        $order->update_meta_data('shkeeper_crypto_address', $payment_request->wallet);
+        $order->update_meta_data('shkeeper_crypto_amount', $payment_request->amount);
 
+        //Not necessary as update_status save whole object
+        //$order->save_meta_data();
         wc_reduce_stock_levels( $order_id );
 
         $order->update_status( 'wc-invoiced', sprintf( __( 'Shkeeper charge awaiting payment to address %s.', 'shkeeper-payment-gateway' ), $payment_request->address ) );
@@ -452,7 +454,9 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
         $custom_meta_names = ['shkeeper_crypto_address', 'shkeeper_crypto_amount', 'shkeeper_crypto_curr'];
 
         foreach ($custom_meta_names as $custom_meta_name) {
-            delete_post_meta($order->get_id(), $custom_meta_name);
+            $order->delete_meta_data($custom_meta_name);
         }
+
+        $order->save_meta_data();
     }
 }

@@ -72,20 +72,22 @@ function shkeeper_checkout_update_order_meta($order_id) {
     }
 
     if($paying_crypto && $paying_crypto !== 'none') {
-        update_post_meta($order_id, 'shkeeper_crypto_curr', $paying_crypto);
+        $order = wc_get_order($order_id);
+        $order->update_meta_data('shkeeper_crypto_curr', $paying_crypto);
+        $order->save_meta_data();
     }
 }
 
 function shkeeper_order_data_after_billing_address($order) {
     if(Shkeeper_WC_Gateway::is_me($order->payment_method)) {
-        echo '<p><strong>' . esc_html__('Payment cryptocurrency:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(wc_strtoupper(get_post_meta($order->get_id(), 'shkeeper_crypto_curr', true))) . '</p>';
-        echo '<p><strong>' . esc_html__('Crypto address:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(wc_strtoupper(get_post_meta($order->get_id(), 'shkeeper_crypto_address', true))) . '</p>';
-        echo '<p><strong>' . esc_html__('Crypto amount:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(rtrim(rtrim(sprintf('%.8F', get_post_meta($order->get_id(), 'shkeeper_crypto_amount', true)), '0'), ".")) . '</p>';
+        echo '<p><strong>' . esc_html__('Payment cryptocurrency:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(wc_strtoupper($order->get_meta('shkeeper_crypto_curr', true))) . '</p>';
+        echo '<p><strong>' . esc_html__('Crypto address:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(wc_strtoupper($order->get_meta('shkeeper_crypto_address', true))) . '</p>';
+        echo '<p><strong>' . esc_html__('Crypto amount:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(rtrim(rtrim(sprintf('%.8F', $order->get_meta('shkeeper_crypto_amount', true)), '0'), ".")) . '</p>';
     }
 }
 
 function shkeeper_order_item_meta_end($item_id, $item, $order) {
     if(Shkeeper_WC_Gateway::is_me($order->payment_method)) {
-        echo '<p><strong>' . esc_html__('Payment cryptocurrency:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(wc_strtoupper(get_post_meta($order->get_id(), 'shkeeper_crypto_curr', true))) . '</p>';
+        echo '<p><strong>' . esc_html__('Payment cryptocurrency:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(wc_strtoupper($order->get_meta( 'shkeeper_crypto_curr', true))) . '</p>';
     }
 }

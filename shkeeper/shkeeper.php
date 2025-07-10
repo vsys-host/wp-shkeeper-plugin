@@ -7,10 +7,10 @@
  * Author URI: https://vsys.host/
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
- * Stable tag: 1.1.0
- * Version: 1.1.0
+ * Stable tag: 1.1.1
+ * Version: 1.1.1
  * WC requires at least: 5.7
- * WC tested up to: 9.3
+ * WC tested up to: 9.9.5
  * Text Domain: shkeeper-payment-gateway
  * Domain Path: /languages
  */
@@ -19,11 +19,16 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SHKEEPER_WC_VERSION', '1.1.0' );
+define( 'SHKEEPER_WC_VERSION', '1.1.1' );
 define( 'SHKEEPER_WC_MAIN_FILE', __FILE__ );
 
 if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) return;
 
+add_action( 'before_woocommerce_init', function() {
+    if ( class_exists( \Automattic\WooCommerce\Utilities\FeaturesUtil::class ) ) {
+        \Automattic\WooCommerce\Utilities\FeaturesUtil::declare_compatibility( 'custom_order_tables', __FILE__, true );
+    }
+} );
 
 add_action( 'plugins_loaded', 'shkeeper_payment_init' );
 function shkeeper_payment_init() {

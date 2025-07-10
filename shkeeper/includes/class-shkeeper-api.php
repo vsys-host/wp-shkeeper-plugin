@@ -32,7 +32,7 @@ class Shkeeper_API {
             'callback_url' => get_site_url() . '/?wc-api=shkeeper-callback',
         ];
 
-        $endpoint = '/' . wc_strtoupper(get_post_meta( $order->get_id(), 'shkeeper_crypto_curr', true )) . '/payment_request';
+        $endpoint = '/' . wc_strtoupper($order->get_meta('shkeeper_crypto_curr', true )) . '/payment_request';
         $request =  self::request($endpoint, json_encode($payment_request, JSON_UNESCAPED_SLASHES));
 
         if($request->status == 'success') {

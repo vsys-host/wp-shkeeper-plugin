@@ -82,8 +82,8 @@ class Shkeeper_Webhook_Handler
 
 
 	$note = __("Transaction recieved. TXID: ", 'shkeeper-payment-gateway');
-        $order->add_order_note( $note . $triggerTransaction->txid . ' ' . $triggerTransaction->crypto . ' ' . $triggerTransaction->amount_crypto);        
-        if($request->paid && $request->balance_fiat >= $order->get_total()) {
+    $order->add_order_note( $note . $triggerTransaction->txid . ' ' . $triggerTransaction->crypto . ' ' . $triggerTransaction->amount_crypto);
+    if($request->paid && $request->balance_fiat >= $order->get_total()) {
 	    return $order->payment_complete($triggerTransaction->txid);
 	} else {
 	   $order->update_status('partial');
