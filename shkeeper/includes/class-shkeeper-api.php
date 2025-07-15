@@ -9,7 +9,7 @@ class Shkeeper_API {
     public static function getCryptosList($endpoint = '/crypto') {
         $cryptos = self::request($endpoint, '', 'GET');
         if($cryptos->status == 'success' && $cryptos->crypto) {
-            return $cryptos->crypto;
+            return $cryptos->crypto_list ?? $cryptos->crypto;
         }
 
         Shkeeper_Logger::log(

@@ -23,7 +23,12 @@ function shkeeper_add_custom_checkout_description($description, $payment_id) {
         'none' => esc_html__( 'Select Cryptocurrency', 'shkeeper-payment-gateway' ),
     ];
     foreach ($available_cryptos as $available_crypto) {
-        $cryptos_options[$available_crypto] = wc_strtoupper($available_crypto);
+        if(is_object($available_crypto) && $available_crypto->display_name) {
+            $cryptos_options[$available_crypto->name] = $available_crypto->display_name;
+        } else {
+            //Shkeeper versions <v1.1.3 compatibility
+            $cryptos_options[$available_crypto] = wc_strtoupper($available_crypto);
+        }
     }
 
     ob_start();
