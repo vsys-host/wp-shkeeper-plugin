@@ -6,11 +6,14 @@
  *
  * @class       Shkeeper_WC_Gateway
  * @extends     WC_Payment_Gateway
- * @version     1.1.0
+ * @version     1.1.1
  */
 class Shkeeper_WC_Gateway extends WC_Payment_Gateway
 {
 
+    public $instructions;
+    public $enable_for_methods;
+    public $enable_for_virtual;
     /**
      * Constructor for the gateway.
      */
@@ -382,7 +385,7 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
         //$order->save_meta_data();
         wc_reduce_stock_levels( $order_id );
 
-        $order->update_status( 'wc-invoiced', sprintf( __( 'Shkeeper charge awaiting payment to address %s.', 'shkeeper-payment-gateway' ), $payment_request->address ) );
+        $order->update_status( 'wc-invoiced', sprintf( __( 'Shkeeper charge awaiting payment to address %s.', 'shkeeper-payment-gateway' ), $response->wallet ?? '' ) );
 
     }
 
