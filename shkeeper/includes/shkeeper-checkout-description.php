@@ -51,7 +51,7 @@ function shkeeper_add_custom_checkout_description($description, $payment_id) {
 }
 
 function shkeeper_change_order_received_text($str, $order) {
-    if(Shkeeper_WC_Gateway::is_me($order->payment_method)) {
+    if(Shkeeper_WC_Gateway::is_me($order->get_payment_method())) {
         $str .= ' ' . esc_html__( 'Find crypto payment details bellow.', 'shkeeper-payment-gateway' );
     }
 
@@ -84,7 +84,7 @@ function shkeeper_checkout_update_order_meta($order_id) {
 }
 
 function shkeeper_order_data_after_billing_address($order) {
-    if(Shkeeper_WC_Gateway::is_me($order->payment_method)) {
+    if(Shkeeper_WC_Gateway::is_me($order->get_payment_method())) {
         echo '<p><strong>' . esc_html__('Payment cryptocurrency:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(wc_strtoupper($order->get_meta('shkeeper_crypto_curr', true))) . '</p>';
         echo '<p><strong>' . esc_html__('Crypto address:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(wc_strtoupper($order->get_meta('shkeeper_crypto_address', true))) . '</p>';
         echo '<p><strong>' . esc_html__('Crypto amount:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(rtrim(rtrim(sprintf('%.8F', $order->get_meta('shkeeper_crypto_amount', true)), '0'), ".")) . '</p>';
@@ -92,7 +92,7 @@ function shkeeper_order_data_after_billing_address($order) {
 }
 
 function shkeeper_order_item_meta_end($item_id, $item, $order) {
-    if(Shkeeper_WC_Gateway::is_me($order->payment_method)) {
+    if(Shkeeper_WC_Gateway::is_me($order->get_payment_method())) {
         echo '<p><strong>' . esc_html__('Payment cryptocurrency:', 'shkeeper-payment-gateway') . ' ' . '</strong>' . esc_html(wc_strtoupper($order->get_meta( 'shkeeper_crypto_curr', true))) . '</p>';
     }
 }
