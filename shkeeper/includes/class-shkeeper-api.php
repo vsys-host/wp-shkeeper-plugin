@@ -25,6 +25,12 @@ class Shkeeper_API {
     }
 
     public static function sendPaymentRequest($order) {
+        $crypto = strtoupper( (string) $order->get_meta( 'shkeeper_crypto_curr', true ) );
+        if ( ! preg_match( '/^[A-Za-z0-9._-]{1,32}$/', $crypto ) ) {
+            Shkeeper_Logger::log( 'Rejected invalid crypto currency value: ' . print_r( $crypto, true ) );
+            return new WP_Error( 'shkeeper_error', __( 'Invalid cryptocurrency selected.', 'shkeeper-payment-gateway' ) );
+        }
+
         $payment_request = [
             'external_id'  => $order->get_id(),
             'fiat'         => $order->get_currency(),
@@ -32,18 +38,23 @@ class Shkeeper_API {
             'callback_url' => get_site_url() . '/?wc-api=shkeeper-callback',
         ];
 
-        $endpoint = '/' . wc_strtoupper($order->get_meta('shkeeper_crypto_curr', true )) . '/payment_request';
-        $request =  self::request($endpoint, json_encode($payment_request, JSON_UNESCAPED_SLASHES));
+        $endpoint = '/' . rawurlencode( $crypto ) . '/payment_request';
+        $request =  self::request($endpoint, wp_json_encode($payment_request, JSON_UNESCAPED_SLASHES));
 
         if($request->status == 'success') {
             return $request;
         }
 
+        
+        $api_key = (string) self::getShkeeperSettings()['api_key'];
+        $masked  = strlen( $api_key ) > 4
+            ? str_repeat( '*', max( 0, strlen( $api_key ) - 4 ) ) . substr( $api_key, -4 )
+            : '****';
         Shkeeper_Logger::log(
             'Unexpected Response: ' . print_r( $request, true ) . PHP_EOL . PHP_EOL . 'Failed request: ' . print_r(
                 [
                     'api endpoint'    => $endpoint,
-                    'api_key'         => substr_replace(self::getShkeeperSettings()['api_key'], '********', - (strlen(self::getShkeeperSettings()['api_key']) / 2 + 4), - (strlen(self::getShkeeperSettings()['api_key']) / 2 - 4)),
+                    'api_key'         => $masked,
                 ],
                 true
             )

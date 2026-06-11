@@ -7,10 +7,10 @@
  * Author URI: https://vsys.host/
  * License: GPLv3
  * License URI: https://www.gnu.org/licenses/gpl-3.0.en.html
- * Stable tag: 1.2.1
- * Version: 1.2.1
+ * Stable tag: 1.2.2
+ * Version: 1.2.2
  * WC requires at least: 5.7
- * WC tested up to: 10.6.1
+ * WC tested up to: 10.8.1
  * Text Domain: shkeeper-payment-gateway
  * Domain Path: /languages
  */
@@ -19,7 +19,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'SHKEEPER_WC_VERSION', '1.2.1' );
+define( 'SHKEEPER_WC_VERSION', '1.2.2' );
 define( 'SHKEEPER_WC_MAIN_FILE', __FILE__ );
 
 if ( ! in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) return;

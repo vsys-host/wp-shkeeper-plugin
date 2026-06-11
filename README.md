@@ -1,7 +1,7 @@
 # wp-shkeeper-plugin
 Shkeeper payment gateway plugin for CMS WordPress + WooCommerce
 
-*Plugin has been tested on CMS WordPress 6.9.4 + WooCommerce 10.6.1*
+*Plugin has been tested on CMS WordPress 7.0 + WooCommerce 10.8.1*
 
 ## Installation
 ### Upload via WordPress Admin

@@ -6,7 +6,7 @@
  *
  * @class       Shkeeper_WC_Gateway
  * @extends     WC_Payment_Gateway
- * @version     1.1.1
+ * @version     1.2.2
  */
 class Shkeeper_WC_Gateway extends WC_Payment_Gateway
 {
@@ -137,7 +137,6 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
      */
     public function is_available()
     {
-	return true;
         $order = null;
         $needs_shipping = false;
 
@@ -368,24 +367,29 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
         Shkeeper_Logger::log( 'Processing response: ' . print_r( $payment_request, true ) );
 
         if (is_wp_error($payment_request)) {
-            wc_add_notice( __('Shkeeper error: ', 'shkeeper-payment-gateway') . $payment_request->get_error_message(), 'error' );
+            Shkeeper_Logger::log( 'Payment request WP_Error: ' . $payment_request->get_error_message() );
+            wc_add_notice( __('Unable to start the crypto payment. Please try again or choose another payment method.', 'shkeeper-payment-gateway'), 'error' );
             return;
         }
         if($payment_request->status != 'success') {
-            wc_add_notice( __('Shkeeper error: ', 'shkeeper-payment-gateway') . $payment_request->message, 'error' );
+            Shkeeper_Logger::log( 'Payment request unsuccessful: ' . print_r( $payment_request->message ?? $payment_request, true ) );
+            wc_add_notice( __('Unable to start the crypto payment. Please try again or choose another payment method.', 'shkeeper-payment-gateway'), 'error' );
             return;
         }
 
         $order_id = $order->get_id();
 
-        $order->update_meta_data('shkeeper_crypto_address', $payment_request->wallet);
-        $order->update_meta_data('shkeeper_crypto_amount', $payment_request->amount);
+        $wallet = sanitize_text_field( $payment_request->wallet ?? '' );
+        $amount = sanitize_text_field( $payment_request->amount ?? '' );
+
+        $order->update_meta_data('shkeeper_crypto_address', $wallet);
+        $order->update_meta_data('shkeeper_crypto_amount', $amount);
 
         //Not necessary as update_status save whole object
         //$order->save_meta_data();
         wc_reduce_stock_levels( $order_id );
 
-        $order->update_status( 'wc-invoiced', sprintf( __( 'Shkeeper charge awaiting payment to address %s.', 'shkeeper-payment-gateway' ), $response->wallet ?? '' ) );
+        $order->update_status( 'wc-invoiced', sprintf( __( 'Shkeeper charge awaiting payment to address %s.', 'shkeeper-payment-gateway' ), $wallet ) );
 
     }
 
@@ -400,14 +404,19 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
         $cryptoAmount = $order->get_meta('shkeeper_crypto_amount');
         $cryptoCurr = $order->get_meta('shkeeper_crypto_curr');
         wp_enqueue_script( 'qrcodejs', plugins_url( 'assets/js/qrcode.min.js', SHKEEPER_WC_MAIN_FILE ), [], '1.0.0', true);
-        $qrCodeJs = "new QRCode(document.getElementById('shkeeper-payment-qr'), {
-                text: '$cryptoAddr?amount=$cryptoAmount',
+
+        $qrText   = $cryptoAddr . '?amount=' . $cryptoAmount;
+        $qrCodeJs = sprintf(
+            "new QRCode(document.getElementById('shkeeper-payment-qr'), {
+                text: %s,
                 width: 128,
                 height: 128,
                 colorDark: '#000000',
                 colorLight: '#ffffff',
                 correctLevel: QRCode.CorrectLevel.H
-         });";
+         });",
+            wp_json_encode( $qrText )
+        );
 
         wp_add_inline_script('qrcodejs', $qrCodeJs);
 
