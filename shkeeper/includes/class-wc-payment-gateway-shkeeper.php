@@ -6,7 +6,7 @@
  *
  * @class       Shkeeper_WC_Gateway
  * @extends     WC_Payment_Gateway
- * @version     1.2.2
+ * @version     1.3.0
  */
 class Shkeeper_WC_Gateway extends WC_Payment_Gateway
 {
@@ -39,8 +39,20 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
         add_action('woocommerce_email_before_order_table', array($this, 'email_instructions'), 10, 3);
 
         //Plugin Css
+        add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ) );
+    }
+
+    /**
+     * Enqueue plugin styles on checkout pages only (includes order-pay and order-received endpoints).
+     */
+    public function enqueue_styles()
+    {
+        if ( ! is_checkout() ) {
+            return;
+        }
+
         wp_register_style( 'shkeeper_styles', plugins_url( 'assets/css/shkeeper-styles.css', SHKEEPER_WC_MAIN_FILE ), [], SHKEEPER_WC_VERSION );
-	wp_enqueue_style( 'shkeeper_styles' );
+        wp_enqueue_style( 'shkeeper_styles' );
     }
 
     /**
@@ -78,6 +90,26 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
                 'title' => __('Api url', 'shkeeper-payment-gateway'),
                 'type' => 'text',
                 'description' => __('Api url for shkeeper gateway', 'shkeeper-payment-gateway'),
+                'desc_tip' => true,
+            ),
+            'processing_currency' => array(
+                'title' => __('Convert To For Processing', 'shkeeper-payment-gateway'),
+                'type' => 'select',
+                'class' => 'wc-enhanced-select',
+                'description' => __('Orders placed in any other currency are converted to this currency before the SHKeeper payment request is created. Desired currency should be configured in SHKeeper.', 'shkeeper-payment-gateway'),
+                'default' => 'USD',
+                'options' => $this->load_processing_currency_options(),
+                'desc_tip' => true,
+            ),
+            'exchange_rate' => array(
+                'title' => __('Exchange rate', 'shkeeper-payment-gateway'),
+                'type' => 'decimal',
+                'description' => sprintf(
+                    /* translators: %s: store currency code */
+                    __('How much 1 %s is worth in the processing currency. Used only when the order currency differs from the processing currency; payment is refused if it is missing then. Multi-currency plugins or a cron can override it with the "shkeeper_exchange_rate" filter.', 'shkeeper-payment-gateway'),
+                    get_woocommerce_currency()
+                ),
+                'default' => '',
                 'desc_tip' => true,
             ),
             'title' => array(
@@ -336,23 +368,30 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
     {
         $order = wc_get_order($order_id);
 
-        if ($order->get_total() > 0) {
-            $this->shkeeper_payment_processing($order);
-
-        } else {
-            $order->payment_complete();
-        }
-
-        if(wc_notice_count()) {
-            $this->delete_shkeeper_custom_meta($order);
+        if (!$order) {
+            wc_add_notice( __('Unable to start the crypto payment. Please try again or choose another payment method.', 'shkeeper-payment-gateway'), 'error' );
             return [
                 'result' => 'failure',
                 'redirect' => ''
             ];
         }
 
+        if ($order->get_total() > 0) {
+            if (!$this->shkeeper_payment_processing($order)) {
+                $this->delete_shkeeper_custom_meta($order);
+                return [
+                    'result' => 'failure',
+                    'redirect' => ''
+                ];
+            }
+        } else {
+            $order->payment_complete();
+        }
+
         // Remove cart.
-        WC()->cart->empty_cart();
+        if (WC()->cart) {
+            WC()->cart->empty_cart();
+        }
 
         // Return thankyou redirect.
         return array(
@@ -361,20 +400,38 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
         );
     }
 
+    /**
+     * Creates the payment request on the Shkeeper side and moves the order to invoiced.
+     *
+     * @param WC_Order $order Order object.
+     * @return bool True when the invoice was created, false on failure (an error notice is added).
+     */
     private function shkeeper_payment_processing($order)
     {
+        // On the order-pay endpoint the checkout meta hooks don't run, so persist the
+        // selection posted with the payment form. Nonce is verified by WC before process_payment.
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing
+        $posted_crypto = sanitize_text_field( wp_unslash( $_POST['paying_crypto'] ?? '' ) );
+        if ( $posted_crypto && 'none' !== $posted_crypto ) {
+            $order->update_meta_data( 'shkeeper_crypto_curr', $posted_crypto );
+        }
+
         $payment_request = Shkeeper_API::sendPaymentRequest($order);
         Shkeeper_Logger::log( 'Processing response: ' . print_r( $payment_request, true ) );
 
         if (is_wp_error($payment_request)) {
             Shkeeper_Logger::log( 'Payment request WP_Error: ' . $payment_request->get_error_message() );
-            wc_add_notice( __('Unable to start the crypto payment. Please try again or choose another payment method.', 'shkeeper-payment-gateway'), 'error' );
-            return;
+            $message = $payment_request->get_error_message();
+            if ( ! $message ) {
+                $message = __('Unable to start the crypto payment. Please try again or choose another payment method.', 'shkeeper-payment-gateway');
+            }
+            wc_add_notice( $message, 'error' );
+            return false;
         }
-        if($payment_request->status != 'success') {
+        if ( 'success' !== ( $payment_request->status ?? '' ) ) {
             Shkeeper_Logger::log( 'Payment request unsuccessful: ' . print_r( $payment_request->message ?? $payment_request, true ) );
             wc_add_notice( __('Unable to start the crypto payment. Please try again or choose another payment method.', 'shkeeper-payment-gateway'), 'error' );
-            return;
+            return false;
         }
 
         $order_id = $order->get_id();
@@ -391,6 +448,7 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
 
         $order->update_status( 'wc-invoiced', sprintf( __( 'Shkeeper charge awaiting payment to address %s.', 'shkeeper-payment-gateway' ), $wallet ) );
 
+        return true;
     }
 
     /**
@@ -400,9 +458,20 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
     {
 
         $order = wc_get_order($order_id);
+
+        // Payment details are only relevant while the order still awaits (part of) the payment.
+        if ( ! $order || ! $order->has_status( array( 'invoiced', 'partial' ) ) ) {
+            return;
+        }
+
         $cryptoAddr = $order->get_meta('shkeeper_crypto_address');
         $cryptoAmount = $order->get_meta('shkeeper_crypto_amount');
         $cryptoCurr = $order->get_meta('shkeeper_crypto_curr');
+
+        if ( ! $cryptoAddr || '' === (string) $cryptoAmount ) {
+            return;
+        }
+
         wp_enqueue_script( 'qrcodejs', plugins_url( 'assets/js/qrcode.min.js', SHKEEPER_WC_MAIN_FILE ), [], '1.0.0', true);
 
         $qrText   = $cryptoAddr . '?amount=' . $cryptoAmount;
@@ -453,7 +522,8 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
      */
     public function email_instructions($order, $sent_to_admin, $plain_text = false)
     {
-        if ($this->instructions && !$sent_to_admin && $this->id === $order->get_payment_method()) {
+        if ($this->instructions && !$sent_to_admin && $this->id === $order->get_payment_method()
+            && $order->has_status(array('invoiced', 'partial'))) {
             echo wp_kses_post(wpautop(wptexturize($this->instructions)) . PHP_EOL);
         }
     }
@@ -462,8 +532,23 @@ class Shkeeper_WC_Gateway extends WC_Payment_Gateway
         return $gateway_id === 'shkeeper';
     }
 
+    /**
+     * All WooCommerce-known currencies as "Name (CODE)" select options.
+     */
+    private function load_processing_currency_options()
+    {
+        $options = array();
+
+        foreach (get_woocommerce_currencies() as $code => $name) {
+            $options[$code] = $name . ' (' . $code . ')';
+        }
+
+        return $options;
+    }
+
     private function delete_shkeeper_custom_meta($order) {
-        $custom_meta_names = ['shkeeper_crypto_address', 'shkeeper_crypto_amount', 'shkeeper_crypto_curr'];
+        // Keep shkeeper_crypto_curr so the customer's selection survives a payment retry.
+        $custom_meta_names = ['shkeeper_crypto_address', 'shkeeper_crypto_amount', 'shkeeper_fiat_currency', 'shkeeper_fiat_amount'];
 
         foreach ($custom_meta_names as $custom_meta_name) {
             $order->delete_meta_data($custom_meta_name);

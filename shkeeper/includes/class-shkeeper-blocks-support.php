@@ -49,7 +49,6 @@ add_action( 'woocommerce_store_api_checkout_update_order_from_request', function
             if ( isset( $data_item['key'] ) && $data_item['key'] === 'shkeeper_crypto_curr' ) {
                 $crypto_currency = sanitize_text_field( $data_item['value'] );
                 $order->update_meta_data( 'shkeeper_crypto_curr', $crypto_currency );
-                $_POST['shkeeper_crypto_curr'] = $crypto_currency;
                 break;
             }
         }
@@ -67,21 +66,31 @@ add_action( 'rest_api_init', function () {
             return true;
         },
         'callback'            => function() {
-            $cryptos = get_transient( 'shkeeper_crypto_list_cache' );
-            if ( false === $cryptos ) {
-                if ( class_exists( 'Shkeeper_API' ) ) {
-                    $cryptos = Shkeeper_API::getCryptosList();
-                    if ( ! is_wp_error( $cryptos ) && ! empty( $cryptos ) ) {
-                        set_transient( 'shkeeper_crypto_list_cache', $cryptos, 10 * MINUTE_IN_SECONDS );
-                    }
-                }
-            }
+            // Shkeeper_API::getCryptosList() caches the list in a transient itself.
+            $cryptos = class_exists( 'Shkeeper_API' ) ? Shkeeper_API::getCryptosList() : [];
 
             if ( is_wp_error( $cryptos ) || empty( $cryptos ) ) {
                 return rest_ensure_response( [] );
             }
 
-            return rest_ensure_response( $cryptos );
+            // Normalize to {name, display_name} so the blocks UI also works with
+            // Shkeeper versions <v1.1.3 that return a plain list of currency codes.
+            $normalized = [];
+            foreach ( (array) $cryptos as $crypto ) {
+                if ( is_object( $crypto ) && ! empty( $crypto->name ) ) {
+                    $normalized[] = [
+                        'name'         => $crypto->name,
+                        'display_name' => ! empty( $crypto->display_name ) ? $crypto->display_name : strtoupper( $crypto->name ),
+                    ];
+                } elseif ( is_scalar( $crypto ) ) {
+                    $normalized[] = [
+                        'name'         => (string) $crypto,
+                        'display_name' => strtoupper( (string) $crypto ),
+                    ];
+                }
+            }
+
+            return rest_ensure_response( $normalized );
         }
     ] );
 } );

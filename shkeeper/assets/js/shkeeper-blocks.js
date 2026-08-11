@@ -19,9 +19,10 @@ const Label = () => {
     return createElement( 'span', { style: { display: 'flex', alignItems: 'center', gap: '8px' } },
         iconUrl ? createElement( 'img', {
             src: iconUrl,
-            alt: 'SHKeeper',
+            alt: labelText,
             style: { height: '24px', width: 'auto', objectFit: 'contain' }
-        } ) : null
+        } ) : null,
+        labelText
     );
 };
 
@@ -60,7 +61,9 @@ const Content = ( props ) => {
     }, [] );
 
     useEffect( () => {
-        const unsubscribe = eventRegistration.onPaymentProcessing( () => {
+        // onPaymentProcessing was renamed to onPaymentSetup in WC Blocks 9.x; keep the old name as a fallback.
+        const subscribeToPayment = eventRegistration.onPaymentSetup || eventRegistration.onPaymentProcessing;
+        const unsubscribe = subscribeToPayment( () => {
             if ( ! selected ) {
                 return {
                     type: 'error',

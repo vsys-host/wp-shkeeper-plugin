@@ -27,7 +27,7 @@ class Shkeeper_Logger
 
         $settings = get_option('woocommerce_shkeeper_settings');
 
-        if (empty($settings) || isset($settings['logging']) && 'yes' !== $settings['logging']) {
+        if (empty($settings) || 'yes' !== ($settings['logging'] ?? 'no')) {
             return;
         }
         if (!is_null($start_time)) {

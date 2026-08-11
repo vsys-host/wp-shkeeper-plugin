@@ -45,10 +45,12 @@ function shkeeper_add_statuses_to_list( $order_statuses ) {
 }
 
 function shkeeper_add_bulk_invoice_order_statuses() {
-    global $post_type;
+    $screen    = function_exists( 'get_current_screen' ) ? get_current_screen() : null;
+    $screen_id = $screen ? $screen->id : '';
 
-    if ( $post_type == 'shop_order' ) {
-	    $status = wp_enqueue_script('shkeeper_admin_script', plugins_url('assets/js/custom_admin_script.js', SHKEEPER_WC_MAIN_FILE));
+    // 'edit-shop_order' is the legacy posts orders list, 'woocommerce_page_wc-orders' is the HPOS one.
+    if ( in_array( $screen_id, array( 'edit-shop_order', 'woocommerce_page_wc-orders' ), true ) ) {
+	    $status = wp_enqueue_script('shkeeper_admin_script', plugins_url('assets/js/custom_admin_script.js', SHKEEPER_WC_MAIN_FILE), array('jquery'), SHKEEPER_WC_VERSION, true);
 
 	    $json = wp_json_encode( [
 	      'invoicedStatus' => esc_html_x( 'Change status to invoiced', 'Order status', 'shkeeper-payment-gateway' ),
